@@ -35,11 +35,11 @@ if product_id:
             ''', unsafe_allow_html=Truе)
         else:
             st.warning("Ссылка на оплату не указана.")
-    else:
-        st.error("Товар не найден")
-        if st.button("Вернуться на главную"):
-            st.query_params.clear()
-            st.rerun()
+        else:
+            st.error("Товар не найден")
+            if st.button("Вернуться на главную"):
+                st.query_params.clear()
+                st.rerun()
         else:
             # --- ГЛАВНАЯ СТРАНИЦА ---
             st.title("💰 Магазин Robux")
