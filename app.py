@@ -1,18 +1,25 @@
 import streamlit as st
 from supabase import create_client
 
-# ... (инициализация supabase как раньше) ...
+# 1. Настройка подключения (ВСТАВЬТЕ СВОИ КЛЮЧИ!)
+SUPABASE_URL = "ВАШ_PROJECT_URL"
+SUPABASE_KEY = "ВАШ_API_ANON_KEY"
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Получаем параметры из URL (например, ?id=1)
+st.set_page_config(page_title="Магазин Robux", layout="centered")
+
+# 2. Логика отображения (Параметры URL)
 params = st.query_params
 product_id = params.get("id")
 
 if product_id:
-    # --- СТРАНИЦА ТОВАРА (как на Allegro) ---
+    # --- СТРАНИЦА ТОВАРА ---
     response = supabase.table("shop_products").select("*").eq("id", product_id).execute()
     if response.data:
         p = response.data[0]
-        st.button("← Назад к списку", on_click=lambda: st.query_params.clear())
+        if st.button("← Назад к списку"):
+            st.query_params.clear()
+            st.rerun()
         st.title(p['product_name'])
         st.write(f"### Цена: {p['price']} руб.")
         st.write(f"Продавец: {p['seller_name']}")
@@ -20,14 +27,28 @@ if product_id:
     else:
         st.error("Товар не найден")
 else:
-    # --- ГЛАВНАЯ СТРАНИЦА (список) ---
+    # --- ГЛАВНАЯ СТРАНИЦА ---
     st.title("💰 Магазин Robux")
-    # ... (форма добавления как была) ...
     
+    # Форма добавления
+    with st.expander("➕ Добавить новый товар"):
+        with st.form("add_product"):
+            seller = st.text_input("Имя продавца")
+            product = st.text_input("Название товара")
+            price = st.number_input("Цена", min_value=0.0)
+            donation_url = st.text_input("Ссылка на оплату")
+            submit = st.form_submit_button("Добавить")
+            if submit:
+                supabase.table("shop_products").insert({
+                    "seller_name": seller, "product_name": product, 
+                    "price": price, "donation_url": donation_url
+                }).execute()
+                st.rerun()
+
+    # Список товаров
     st.subheader("Список товаров")
     response = supabase.table("shop_products").select("*").execute()
     for p in response.data:
-        # При клике на колонку меняем URL, и Streamlit перезагрузится на страницу товара
-        if st.button(f"Посмотреть: {p['product_name']}", key=p['id']):
+        if st.button(f"Посмотреть: {p['product_name']}", key=str(p['id'])):
             st.query_params["id"] = p['id']
             st.rerun()
