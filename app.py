@@ -2,8 +2,8 @@ import streamlit as st
 from supabase import create_client
 
 # 1. Настройка подключения (ВСТАВЬТЕ СВОИ КЛЮЧИ!)
-SUPABASE_URL = "ВАШ_PROJECT_URL"
-SUPABASE_KEY = "ВАШ_API_ANON_KEY"
+SUPABASE_URL = "https://cfsvmuewbskyqumhkyah.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNmc3ZtdWV3YnNreXF1bWhreWFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI2Mzg5MzMsImV4cCI6MjA5ODIxNDkzM30.O6gXrIDbi2J2-JYUYGIOSW6Zm2cb8Ib7YhldhF_3_Wk"
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 st.set_page_config(page_title="Магазин Robux", layout="centered")
