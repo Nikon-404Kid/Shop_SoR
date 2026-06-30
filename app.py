@@ -13,32 +13,26 @@ params = st.query_params
 product_id = params.get("id")
 
 if product_id:
-    # --- СТРАНИЦА ТОВАРА ---
-    response = supabase.table("shop_products").select("*").eq("id", product_id).execute()
-    
-    if response.data:
-        p = response.data[0]
-        
-        # Кнопка назад
-        if st.button("⬅ Назад к списку"):
-            st.query_params.clear()
-            st.rerun()
-            
-        st.title(p['product_name'])
-        st.write(f"### Цена: {p['price']} руб.")
+    # ... (ваша страница товара) ...
         st.write(f"Продавец: {p['seller_name']}")
         
-        # Используем обычную ссылку вместо link_button, если он вызывает сброс
+        # Кнопка удаления
+        if st.button("🗑 Удалить товар", type="primary"):
+            supabase.table("shop_products").delete().eq("id", p['id']).execute()
+            st.success("Товар удален!")
+            st.query_params.clear() # Возвращаемся к списку
+            st.rerun()
+            
+        # Кнопка оплаты (как мы делали раньше)
         url = p.get('donation_url')
         if url:
-            # st.markdown делает красивую кнопку, которая не перезагружает страницу
-            st.markdown(f'''
+             st.markdown(f'''
                 <a href="{url}" target="_blank">
                     <button style="width:100%; height:40px; border-radius:5px; background-color:#FF4B4B; color:white; border:none; font-size:18px;">
                         Купить сейчас
                     </button>
                 </a>
-            ''', unsafe_allow_html=True)
+            ''', unsafe_allow_html=Truе
         else:
             st.warning("Ссылка на оплату не указана.")
     else:
