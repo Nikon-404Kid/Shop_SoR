@@ -15,20 +15,40 @@ product_id = params.get("id")
 if product_id:
     # --- СТРАНИЦА ТОВАРА ---
     response = supabase.table("shop_products").select("*").eq("id", product_id).execute()
+    
     if response.data:
         p = response.data[0]
-        if st.button("← Назад к списку"):
+        
+        # Кнопка назад
+        if st.button("⬅ Назад к списку"):
             st.query_params.clear()
             st.rerun()
+            
         st.title(p['product_name'])
         st.write(f"### Цена: {p['price']} руб.")
         st.write(f"Продавец: {p['seller_name']}")
-        st.link_button("Купить сейчас", p.get('donation_url', '#'))
+        
+        # Используем обычную ссылку вместо link_button, если он вызывает сброс
+        url = p.get('donation_url')
+        if url:
+            # st.markdown делает красивую кнопку, которая не перезагружает страницу
+            st.markdown(f'''
+                <a href="{url}" target="_blank">
+                    <button style="width:100%; height:40px; border-radius:5px; background-color:#FF4B4B; color:white; border:none; font-size:18px;">
+                        Купить сейчас
+                    </button>
+                </a>
+            ''', unsafe_allow_html=True)
+        else:
+            st.warning("Ссылка на оплату не указана.")
     else:
         st.error("Товар не найден")
-else:
-    # --- ГЛАВНАЯ СТРАНИЦА ---
-    st.title("💰 Магазин Robux")
+        if st.button("Вернуться на главную"):
+            st.query_params.clear()
+            st.rerun()
+        else:
+            # --- ГЛАВНАЯ СТРАНИЦА ---
+            st.title("💰 Магазин Robux")
     
     # Форма добавления
     with st.expander("➕ Добавить новый товар"):
