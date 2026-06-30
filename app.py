@@ -27,12 +27,12 @@ if product_id:
         url = p.get('donation_url')
         if url:
              st.markdown(f'''
-                <a href="{url}" target="_blank">)
+                <a href="{url}" target="_blank">
                     <button style="width:100%; height:40px; border-radius:5px; background-color:#FF4B4B; color:white; border:none; font-size:18px;">
                         Купить сейчас
                     </button>
                 </a>
-            ''', unsafe_allow_html=Truе
+            ''', unsafe_allow_html=Truе)
         else:
             st.warning("Ссылка на оплату не указана.")
     else:
